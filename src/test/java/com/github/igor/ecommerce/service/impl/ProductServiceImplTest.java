@@ -260,6 +260,18 @@ class ProductServiceImplTest {
     }
 
     @Test
+    void adjustStockShouldThrowBusinessExceptionWhenQuantityIsZero() {
+        Product product = product(1L, category(1L));
+        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+
+        assertThatThrownBy(() -> productService.adjustStock(1L, new StockUpdateRequest(0)))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("Quantity must not be zero");
+
+        assertThat(product.getStockQuantity()).isEqualTo(10);
+    }
+
+    @Test
     void adjustStockShouldThrowNotFoundExceptionWhenProductNotFound() {
         when(productRepository.findById(99L)).thenReturn(Optional.empty());
 

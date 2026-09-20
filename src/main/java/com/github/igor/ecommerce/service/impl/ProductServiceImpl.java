@@ -96,6 +96,9 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductResponse adjustStock(Long id, StockUpdateRequest request) {
         Product product = findEntityById(id);
+        if (request.quantity() == 0) {
+            throw new BusinessException("Quantity must not be zero");
+        }
         int newQuantity = product.getStockQuantity() + request.quantity();
         if (newQuantity < 0) {
             throw new BusinessException(
