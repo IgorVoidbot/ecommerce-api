@@ -26,22 +26,22 @@ Plano de desenvolvimento dividido em sprints. Cada sprint corresponde a uma fase
 
 ## Sprint 2 — Domínio Categoria e Produto
 
-**Branch:** `feature/fase-2-catalog` | **Status:** ⬜ Não iniciada | **Agente responsável:** `backend-dev`
+**Branch:** `feature/fase-2-catalog` | **Status:** ✅ Concluída | **Agente responsável:** `backend-dev`
 
 **Objetivo:** primeiro CRUD completo, paginação e tratamento de erros.
 
-- [ ] Entidades `Category` e `Product` + repositories
-- [ ] DTOs de request/response + mappers
-- [ ] Services (interface + implementação) de categoria e produto
-- [ ] Controllers REST de categoria e produto
-- [ ] Paginação e filtros (nome, categoria) em produtos
-- [ ] `@RestControllerAdvice` com padrão de erro JSON
-- [ ] Seed de admin e categorias via migration (`V2`)
-- [ ] Validações Bean Validation nos requests
-- [ ] Testes unitários das services de categoria e produto
-- [ ] Testes de integração dos endpoints (200/201/400/404/409)
-- [ ] `mvn clean verify` passando
-- [ ] Merge da branch em `develop`
+- [x] Entidades `Category` e `Product` + repositories
+- [x] DTOs de request/response + mappers
+- [x] Services (interface + implementação) de categoria e produto
+- [x] Controllers REST de categoria e produto
+- [x] Paginação e filtros (nome, categoria) em produtos
+- [x] `@RestControllerAdvice` com padrão de erro JSON
+- [x] Seed de admin e categorias via migration (`V2`)
+- [x] Validações Bean Validation nos requests
+- [x] Testes unitários das services de categoria e produto
+- [x] Testes de integração dos endpoints (200/201/400/404/409)
+- [x] `mvn clean verify` passando
+- [x] Merge da branch em `develop`
 
 ---
 
