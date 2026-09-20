@@ -14,10 +14,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("""
             SELECT p
             FROM Product p
-            WHERE (:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%')))
+            WHERE LOWER(p.name) LIKE :namePattern
               AND (:categoryId IS NULL OR p.category.id = :categoryId)
             """)
-    Page<Product> search(@Param("name") String name,
+    Page<Product> search(@Param("namePattern") String namePattern,
                          @Param("categoryId") Long categoryId,
                          Pageable pageable);
 }
