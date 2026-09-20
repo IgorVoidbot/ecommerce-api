@@ -7,7 +7,7 @@ Plano de desenvolvimento dividido em sprints. Cada sprint corresponde a uma fase
 
 ## Sprint 1 — Setup do Projeto
 
-**Branch:** `feature/fase-1-setup` | **Status:** ✅ Concluída
+**Branch:** `feature/fase-1-setup` | **Status:** ✅ Concluída | **Agente responsável:** `devops-engineer`
 
 **Objetivo:** projeto base rodando com banco, migração e healthcheck.
 
@@ -26,7 +26,7 @@ Plano de desenvolvimento dividido em sprints. Cada sprint corresponde a uma fase
 
 ## Sprint 2 — Domínio Categoria e Produto
 
-**Branch:** `feature/fase-2-catalog` | **Status:** ⬜ Não iniciada
+**Branch:** `feature/fase-2-catalog` | **Status:** ⬜ Não iniciada | **Agente responsável:** `backend-dev`
 
 **Objetivo:** primeiro CRUD completo, paginação e tratamento de erros.
 
@@ -47,7 +47,7 @@ Plano de desenvolvimento dividido em sprints. Cada sprint corresponde a uma fase
 
 ## Sprint 3 — Autenticação e Autorização JWT
 
-**Branch:** `feature/fase-3-auth` | **Status:** ⬜ Não iniciada
+**Branch:** `feature/fase-3-auth` | **Status:** ⬜ Não iniciada | **Agente responsável:** `security-engineer`
 
 **Objetivo:** segurança completa com JWT e roles.
 
@@ -68,7 +68,7 @@ Plano de desenvolvimento dividido em sprints. Cada sprint corresponde a uma fase
 
 ## Sprint 4 — Carrinho de Compras
 
-**Branch:** `feature/fase-4-cart` | **Status:** ⬜ Não iniciada
+**Branch:** `feature/fase-4-cart` | **Status:** ⬜ Não iniciada | **Agente responsável:** `backend-dev`
 
 **Objetivo:** carrinho por usuário com regras de estoque.
 
@@ -90,7 +90,7 @@ Plano de desenvolvimento dividido em sprints. Cada sprint corresponde a uma fase
 
 ## Sprint 5 — Pedidos e Estoque
 
-**Branch:** `feature/fase-5-orders` | **Status:** ⬜ Não iniciada
+**Branch:** `feature/fase-5-orders` | **Status:** ⬜ Não iniciada | **Agente responsável:** `backend-dev`
 
 **Objetivo:** fluxo de compra completo com transações e baixa de estoque.
 
@@ -112,7 +112,7 @@ Plano de desenvolvimento dividido em sprints. Cada sprint corresponde a uma fase
 
 ## Sprint 6 — Qualidade Final e Entrega
 
-**Branch:** `feature/fase-6-polish` | **Status:** ⬜ Não iniciada
+**Branch:** `feature/fase-6-polish` | **Status:** ⬜ Não iniciada | **Agente responsável:** `tech-lead`
 
 **Objetivo:** projeto pronto para apresentar a recrutadores.
 
