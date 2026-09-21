@@ -1,0 +1,14 @@
+target/
+.idea/
+*.iml
+.vscode/
+.git/
+.github/
+.env
+*.local
+README.md
+PRD.md
+sprints.md
+AGENTS.md
+.opencode/
+docker-compose.yml
