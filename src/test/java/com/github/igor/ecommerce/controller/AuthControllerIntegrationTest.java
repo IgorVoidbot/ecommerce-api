@@ -1,5 +1,8 @@
 package com.github.igor.ecommerce.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.igor.ecommerce.support.IntegrationTestSupport;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -13,6 +16,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AuthControllerIntegrationTest extends IntegrationTestSupport {
 
     private static final String BASE_PATH = "/api/v1/auth";
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     void registerShouldReturn201WithUserSummary() throws Exception {
@@ -61,6 +66,19 @@ class AuthControllerIntegrationTest extends IntegrationTestSupport {
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.message").value("Validation failed"))
                 .andExpect(jsonPath("$.errors.password").value("Password must be at least 8 characters long"));
+    }
+
+    @Test
+    void registerShouldReturn400WithErrorsMapWhenNameIsBlank() throws Exception {
+        mockMvc.perform(post(BASE_PATH + "/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"name":"   ","email":"igor@example.com","password":"senhaForte123"}
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.message").value("Validation failed"))
+                .andExpect(jsonPath("$.errors.name").value("Name is required"));
     }
 
     @Test
@@ -119,5 +137,37 @@ class AuthControllerIntegrationTest extends IntegrationTestSupport {
                                 """))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.message").value("Invalid email or password"));
+    }
+
+    @Test
+    void loginShouldReturn400WhenBodyIsMalformed() throws Exception {
+        mockMvc.perform(post(BASE_PATH + "/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"admin@ecommerce.com\","))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.message").value("Malformed JSON request"))
+                .andExpect(jsonPath("$.path").value(BASE_PATH + "/login"));
+    }
+
+    @Test
+    void loginShouldNotRevealWhetherEmailExists() throws Exception {
+        JsonNode wrongPassword = performLoginAndReadBody("admin@ecommerce.com", "wrong-password");
+        JsonNode unknownEmail = performLoginAndReadBody("unknown@example.com", "senhaForte123");
+
+        ((ObjectNode) wrongPassword).remove("timestamp");
+        ((ObjectNode) unknownEmail).remove("timestamp");
+
+        assertThat(wrongPassword.get("message").asText()).isEqualTo("Invalid email or password");
+        assertThat(wrongPassword).isEqualTo(unknownEmail);
+    }
+
+    private JsonNode performLoginAndReadBody(String email, String password) throws Exception {
+        String body = mockMvc.perform(post(BASE_PATH + "/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"" + email + "\",\"password\":\"" + password + "\"}"))
+                .andExpect(status().isUnauthorized())
+                .andReturn().getResponse().getContentAsString();
+        return objectMapper.readTree(body);
     }
 }
