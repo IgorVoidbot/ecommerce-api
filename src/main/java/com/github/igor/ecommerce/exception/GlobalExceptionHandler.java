@@ -33,6 +33,11 @@ public class GlobalExceptionHandler {
         return buildProblemDetail(HttpStatus.CONFLICT, ex.getMessage(), request);
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    public ProblemDetail handleUnauthorized(UnauthorizedException ex, HttpServletRequest request) {
+        return buildProblemDetail(HttpStatus.UNAUTHORIZED, ex.getMessage(), request);
+    }
+
     @ExceptionHandler(BusinessException.class)
     public ProblemDetail handleBusiness(BusinessException ex, HttpServletRequest request) {
         return buildProblemDetail(HttpStatus.BAD_REQUEST, ex.getMessage(), request);

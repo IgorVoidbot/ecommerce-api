@@ -16,6 +16,12 @@ spring:
 server:
   port: 8080
 
+app:
+  jwt:
+    # Dev-only default; in production always provide APP_JWT_SECRET (>= 32 bytes for HS256).
+    secret: ${APP_JWT_SECRET:dev-only-secret-key-change-me-in-production-0123456789abcdef}
+    expiration-minutes: ${APP_JWT_EXPIRATION_MINUTES:120}
+
 management:
   endpoints:
     web:
