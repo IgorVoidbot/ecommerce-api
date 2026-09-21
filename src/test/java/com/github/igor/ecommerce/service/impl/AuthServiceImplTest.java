@@ -4,10 +4,12 @@ import com.github.igor.ecommerce.dto.request.LoginRequest;
 import com.github.igor.ecommerce.dto.request.RegisterRequest;
 import com.github.igor.ecommerce.dto.response.LoginResponse;
 import com.github.igor.ecommerce.dto.response.UserResponse;
+import com.github.igor.ecommerce.entity.Cart;
 import com.github.igor.ecommerce.entity.User;
 import com.github.igor.ecommerce.enums.Role;
 import com.github.igor.ecommerce.exception.ConflictException;
 import com.github.igor.ecommerce.exception.UnauthorizedException;
+import com.github.igor.ecommerce.repository.CartRepository;
 import com.github.igor.ecommerce.repository.UserRepository;
 import com.github.igor.ecommerce.security.JwtService;
 import org.junit.jupiter.api.Test;
@@ -41,6 +43,9 @@ class AuthServiceImplTest {
     private UserRepository userRepository;
 
     @Mock
+    private CartRepository cartRepository;
+
+    @Mock
     private PasswordEncoder passwordEncoder;
 
     @Mock
@@ -62,6 +67,11 @@ class AuthServiceImplTest {
             ReflectionTestUtils.setField(user, "id", 1L);
             return user;
         });
+        when(cartRepository.save(any(Cart.class))).thenAnswer(invocation -> {
+            Cart cart = invocation.getArgument(0);
+            ReflectionTestUtils.setField(cart, "id", 10L);
+            return cart;
+        });
 
         UserResponse response = authService.register(request);
 
@@ -74,6 +84,10 @@ class AuthServiceImplTest {
         verify(userRepository).save(captor.capture());
         assertThat(captor.getValue().getPassword()).isEqualTo("hashed-password");
         assertThat(captor.getValue().getPassword()).isNotEqualTo("plainPassword123");
+
+        ArgumentCaptor<Cart> cartCaptor = ArgumentCaptor.forClass(Cart.class);
+        verify(cartRepository).save(cartCaptor.capture());
+        assertThat(cartCaptor.getValue().getUser().getEmail()).isEqualTo("igor@example.com");
     }
 
     @Test
@@ -85,6 +99,7 @@ class AuthServiceImplTest {
                 .hasMessageContaining("igor@example.com");
 
         verify(userRepository, never()).save(any(User.class));
+        verify(cartRepository, never()).save(any(Cart.class));
     }
 
     @Test
