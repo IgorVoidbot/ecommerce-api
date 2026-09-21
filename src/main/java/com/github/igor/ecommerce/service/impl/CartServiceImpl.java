@@ -48,9 +48,15 @@ public class CartServiceImpl implements CartService {
         Cart cart = getOrCreateCart();
         Product product = productRepository.findById(request.productId())
                 .orElseThrow(() -> new NotFoundException("Product not found with id: " + request.productId()));
-        validateStock(product, request.quantity());
-        CartItem item = cartItemRepository.save(new CartItem(cart, product, request.quantity()));
-        cart.addItem(item);
+        CartItem existing = cart.findItemByProductId(request.productId()).orElse(null);
+        int newQuantity = (existing == null ? 0 : existing.getQuantity()) + request.quantity();
+        validateStock(product, newQuantity);
+        if (existing == null) {
+            CartItem item = cartItemRepository.save(new CartItem(cart, product, request.quantity()));
+            cart.addItem(item);
+        } else {
+            existing.setQuantity(newQuantity);
+        }
         return CartMapper.toResponse(cart);
     }
 
