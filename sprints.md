@@ -112,18 +112,18 @@ Plano de desenvolvimento dividido em sprints. Cada sprint corresponde a uma fase
 
 ## Sprint 6 — Qualidade Final e Entrega
 
-**Branch:** `feature/fase-6-polish` | **Status:** ⬜ Não iniciada | **Agente responsável:** `tech-lead`
+**Branch:** `feature/fase-6-polish` | **Status:** ✅ Concluída | **Agente responsável:** `tech-lead`
 
 **Objetivo:** projeto pronto para apresentar a recrutadores.
 
-- [ ] OpenAPI/Swagger configurado (`/swagger-ui.html`)
-- [ ] Cobertura de testes >= 70% nas services
-- [ ] `Dockerfile` da aplicação + compose final (api + postgres)
-- [ ] GitHub Actions com build e testes
-- [ ] README completo (stack, como rodar, endpoints, prints)
-- [ ] Revisão geral do código e commit history
-- [ ] `mvn clean verify` passando
-- [ ] Merge em `develop` e release `v1.0.0` em `main`
+- [x] OpenAPI/Swagger configurado (`/swagger-ui.html`)
+- [x] Cobertura de testes >= 70% nas services
+- [x] `Dockerfile` da aplicação + compose final (api + postgres)
+- [x] GitHub Actions com build e testes
+- [x] README completo (stack, como rodar, endpoints, prints)
+- [x] Revisão geral do código e commit history
+- [x] `mvn clean verify` passando
+- [x] Merge em `develop` e release `v1.0.0` em `main`
 
 ---
 
