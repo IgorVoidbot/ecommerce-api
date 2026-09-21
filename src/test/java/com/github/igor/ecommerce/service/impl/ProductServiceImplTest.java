@@ -162,6 +162,18 @@ class ProductServiceImplTest {
     }
 
     @Test
+    void listAllShouldTrimAndLowercaseNameBeforeSearching() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Product> page = new PageImpl<>(List.of(product(1L, category(1L))), pageable, 1);
+        when(productRepository.search(eq("%spring boot%"), isNull(), eq(pageable))).thenReturn(page);
+
+        Page<ProductResponse> result = productService.listAll("  Spring Boot  ", null, pageable);
+
+        assertThat(result.getContent()).hasSize(1);
+        verify(productRepository).search("%spring boot%", null, pageable);
+    }
+
+    @Test
     void updateShouldApplyOnlyProvidedFields() {
         ProductUpdateRequest request = new ProductUpdateRequest("New Name", null, null, null, null);
         Product product = product(1L, category(1L));
@@ -172,6 +184,39 @@ class ProductServiceImplTest {
         assertThat(response.name()).isEqualTo("New Name");
         assertThat(response.price()).isEqualByComparingTo("99.90");
         assertThat(response.categoryId()).isEqualTo(1L);
+    }
+
+    @Test
+    void updateShouldApplyAllProvidedFields() {
+        ProductUpdateRequest request = new ProductUpdateRequest(
+                "New Name", "New description", new BigDecimal("49.90"), 25, 2L);
+        Product product = product(1L, category(1L));
+        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+        when(categoryRepository.findById(2L)).thenReturn(Optional.of(category(2L)));
+
+        ProductResponse response = productService.update(1L, request);
+
+        assertThat(response.name()).isEqualTo("New Name");
+        assertThat(response.description()).isEqualTo("New description");
+        assertThat(response.price()).isEqualByComparingTo("49.90");
+        assertThat(response.stockQuantity()).isEqualTo(25);
+        assertThat(response.categoryId()).isEqualTo(2L);
+    }
+
+    @Test
+    void updateShouldApplyDescriptionPriceAndStockWithoutChangingCategory() {
+        ProductUpdateRequest request = new ProductUpdateRequest(
+                null, "New description", new BigDecimal("49.90"), 25, null);
+        Product product = product(1L, category(1L));
+        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+
+        ProductResponse response = productService.update(1L, request);
+
+        assertThat(response.description()).isEqualTo("New description");
+        assertThat(response.price()).isEqualByComparingTo("49.90");
+        assertThat(response.stockQuantity()).isEqualTo(25);
+        assertThat(response.categoryId()).isEqualTo(1L);
+        assertThat(response.name()).isEqualTo("Spring Boot Guide");
     }
 
     @Test
