@@ -68,23 +68,23 @@ Plano de desenvolvimento dividido em sprints. Cada sprint corresponde a uma fase
 
 ## Sprint 4 — Carrinho de Compras
 
-**Branch:** `feature/fase-4-cart` | **Status:** ⬜ Não iniciada | **Agente responsável:** `backend-dev`
+**Branch:** `feature/fase-4-cart` | **Status:** ✅ Concluída | **Agente responsável:** `backend-dev`
 
 **Objetivo:** carrinho por usuário com regras de estoque.
 
-- [ ] Entidades `Cart` e `CartItem` + migration (`V4`)
-- [ ] Criação automática do carrinho no registro do usuário
-- [ ] `GET /cart` com itens e total calculado
-- [ ] `POST /cart/items` adicionando produto
-- [ ] `PUT /cart/items/{itemId}` alterando quantidade
-- [ ] `DELETE /cart/items/{itemId}` removendo item
-- [ ] `DELETE /cart` limpando carrinho
-- [ ] Produto repetido soma quantidade (sem duplicidade)
-- [ ] Validação de estoque na adição/alteração (400 se exceder)
-- [ ] Isolamento: usuário vê apenas o próprio carrinho
-- [ ] Testes unitários da service de carrinho
-- [ ] `mvn clean verify` passando
-- [ ] Merge da branch em `develop`
+- [x] Entidades `Cart` e `CartItem` + migration (`V4`)
+- [x] Criação automática do carrinho no registro do usuário
+- [x] `GET /cart` com itens e total calculado
+- [x] `POST /cart/items` adicionando produto
+- [x] `PUT /cart/items/{itemId}` alterando quantidade
+- [x] `DELETE /cart/items/{itemId}` removendo item
+- [x] `DELETE /cart` limpando carrinho
+- [x] Produto repetido soma quantidade (sem duplicidade)
+- [x] Validação de estoque na adição/alteração (400 se exceder)
+- [x] Isolamento: usuário vê apenas o próprio carrinho
+- [x] Testes unitários da service de carrinho
+- [x] `mvn clean verify` passando
+- [x] Merge da branch em `develop`
 
 ---
 
