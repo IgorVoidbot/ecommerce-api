@@ -1,5 +1,6 @@
 package com.github.igor.ecommerce.service;
 
+import com.github.igor.ecommerce.dto.request.OrderStatusUpdateRequest;
 import com.github.igor.ecommerce.dto.response.OrderResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,4 +14,6 @@ public interface OrderService {
     OrderResponse findMyOrderById(Long id);
 
     Page<OrderResponse> listAllOrders(Pageable pageable);
+
+    OrderResponse updateStatus(Long id, OrderStatusUpdateRequest request);
 }

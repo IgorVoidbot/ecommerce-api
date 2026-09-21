@@ -1,5 +1,6 @@
 package com.github.igor.ecommerce.service.impl;
 
+import com.github.igor.ecommerce.dto.request.OrderStatusUpdateRequest;
 import com.github.igor.ecommerce.dto.response.OrderResponse;
 import com.github.igor.ecommerce.entity.Cart;
 import com.github.igor.ecommerce.entity.CartItem;
@@ -7,6 +8,7 @@ import com.github.igor.ecommerce.entity.Order;
 import com.github.igor.ecommerce.entity.OrderItem;
 import com.github.igor.ecommerce.entity.Product;
 import com.github.igor.ecommerce.entity.User;
+import com.github.igor.ecommerce.enums.OrderStatus;
 import com.github.igor.ecommerce.enums.Role;
 import com.github.igor.ecommerce.exception.BusinessException;
 import com.github.igor.ecommerce.exception.ForbiddenException;
@@ -89,6 +91,25 @@ public class OrderServiceImpl implements OrderService {
     public Page<OrderResponse> listAllOrders(Pageable pageable) {
         return orderRepository.findAll(pageable)
                 .map(OrderMapper::toResponse);
+    }
+
+    @Override
+    @Transactional
+    public OrderResponse updateStatus(Long id, OrderStatusUpdateRequest request) {
+        Order order = findEntityById(id);
+        OrderStatus currentStatus = order.getStatus();
+        OrderStatus newStatus = request.status();
+        if (!currentStatus.canTransitionTo(newStatus)) {
+            throw new BusinessException("Invalid status transition from " + currentStatus + " to " + newStatus);
+        }
+        if (newStatus == OrderStatus.CANCELLED) {
+            for (OrderItem item : order.getItems()) {
+                Product product = item.getProduct();
+                product.setStockQuantity(product.getStockQuantity() + item.getQuantity());
+            }
+        }
+        order.setStatus(newStatus);
+        return OrderMapper.toResponse(order);
     }
 
     private void validateStockForAllItems(List<CartItem> cartItems) {
