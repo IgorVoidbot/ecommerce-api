@@ -4,3 +4,8 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+
+app:
+  jwt:
+    secret: test-only-secret-key-for-h2-tests-0123456789abcdef
+    expiration-minutes: 120
