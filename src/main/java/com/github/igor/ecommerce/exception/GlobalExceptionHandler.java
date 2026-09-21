@@ -38,6 +38,11 @@ public class GlobalExceptionHandler {
         return buildProblemDetail(HttpStatus.UNAUTHORIZED, ex.getMessage(), request);
     }
 
+    @ExceptionHandler(ForbiddenException.class)
+    public ProblemDetail handleForbidden(ForbiddenException ex, HttpServletRequest request) {
+        return buildProblemDetail(HttpStatus.FORBIDDEN, ex.getMessage(), request);
+    }
+
     @ExceptionHandler(BusinessException.class)
     public ProblemDetail handleBusiness(BusinessException ex, HttpServletRequest request) {
         return buildProblemDetail(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
