@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: ecommerce-api
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ecommerce
+    username: ecommerce
+    password: ecommerce
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+
+server:
+  port: 8080
+
+app:
+  jwt:
+    # Dev-only default; in production always provide APP_JWT_SECRET (>= 32 bytes for HS256).
+    secret: ${APP_JWT_SECRET:dev-only-secret-key-change-me-in-production-0123456789abcdef}
+    expiration-minutes: ${APP_JWT_EXPIRATION_MINUTES:120}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
