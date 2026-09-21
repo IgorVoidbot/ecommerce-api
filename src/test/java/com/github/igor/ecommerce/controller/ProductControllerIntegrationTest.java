@@ -4,15 +4,11 @@ import com.github.igor.ecommerce.entity.Category;
 import com.github.igor.ecommerce.entity.Product;
 import com.github.igor.ecommerce.repository.CategoryRepository;
 import com.github.igor.ecommerce.repository.ProductRepository;
+import com.github.igor.ecommerce.support.IntegrationTestSupport;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
@@ -28,16 +24,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
-@Transactional
-class ProductControllerIntegrationTest {
+class ProductControllerIntegrationTest extends IntegrationTestSupport {
 
     private static final String BASE_PATH = "/api/v1/products";
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -76,9 +65,9 @@ class ProductControllerIntegrationTest {
     void createShouldReturn400WhenPriceIsNotPositive() throws Exception {
         Long categoryId = categoryIdByName("Programação");
 
-        mockMvc.perform(post(BASE_PATH)
+        mockMvc.perform(bearer(post(BASE_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"Curso\",\"price\":0,\"stockQuantity\":5,\"categoryId\":" + categoryId + "}"))
+                        .content("{\"name\":\"Curso\",\"price\":0,\"stockQuantity\":5,\"categoryId\":" + categoryId + "}"), adminToken))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.timestamp").exists())
                 .andExpect(jsonPath("$.status").value(400))
@@ -92,9 +81,9 @@ class ProductControllerIntegrationTest {
     void createShouldReturn400WhenStockQuantityIsNegative() throws Exception {
         Long categoryId = categoryIdByName("Programação");
 
-        mockMvc.perform(post(BASE_PATH)
+        mockMvc.perform(bearer(post(BASE_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"Curso\",\"price\":99.90,\"stockQuantity\":-1,\"categoryId\":" + categoryId + "}"))
+                        .content("{\"name\":\"Curso\",\"price\":99.90,\"stockQuantity\":-1,\"categoryId\":" + categoryId + "}"), adminToken))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors.stockQuantity").value("Stock quantity must be zero or greater"));
     }
@@ -103,9 +92,9 @@ class ProductControllerIntegrationTest {
     void createShouldReturn400WhenNameIsBlank() throws Exception {
         Long categoryId = categoryIdByName("Programação");
 
-        mockMvc.perform(post(BASE_PATH)
+        mockMvc.perform(bearer(post(BASE_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"   \",\"price\":99.90,\"stockQuantity\":5,\"categoryId\":" + categoryId + "}"))
+                        .content("{\"name\":\"   \",\"price\":99.90,\"stockQuantity\":5,\"categoryId\":" + categoryId + "}"), adminToken))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors.name").value("Name is required"));
     }
@@ -114,9 +103,9 @@ class ProductControllerIntegrationTest {
     void listAllShouldReturnPaginatedPageResponse() throws Exception {
         seedThreeProducts();
 
-        mockMvc.perform(get(BASE_PATH)
+        mockMvc.perform(bearer(get(BASE_PATH)
                         .param("page", "0")
-                        .param("size", "2"))
+                        .param("size", "2"), userToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.page").value(0))
                 .andExpect(jsonPath("$.size").value(2))
@@ -131,7 +120,7 @@ class ProductControllerIntegrationTest {
     void listAllShouldFilterByNameIgnoringCase() throws Exception {
         seedThreeProducts();
 
-        mockMvc.perform(get(BASE_PATH).param("name", "CURSO"))
+        mockMvc.perform(bearer(get(BASE_PATH).param("name", "CURSO"), userToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElements").value(2))
                 .andExpect(jsonPath("$.content", hasSize(2)))
@@ -146,7 +135,7 @@ class ProductControllerIntegrationTest {
         saveProduct("Curso de Java", new BigDecimal("99.90"), 5, programacaoId);
         saveProduct("Ebook Docker", new BigDecimal("59.90"), 3, mobileId);
 
-        mockMvc.perform(get(BASE_PATH).param("categoryId", mobileId.toString()))
+        mockMvc.perform(bearer(get(BASE_PATH).param("categoryId", mobileId.toString()), userToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElements").value(1))
                 .andExpect(jsonPath("$.content", hasSize(1)))
@@ -159,7 +148,7 @@ class ProductControllerIntegrationTest {
         Long categoryId = categoryIdByName("Programação");
         Product product = saveProduct("Curso de Java", new BigDecimal("99.90"), 10, categoryId);
 
-        mockMvc.perform(get(BASE_PATH + "/{id}", product.getId()))
+        mockMvc.perform(bearer(get(BASE_PATH + "/{id}", product.getId()), userToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(product.getId()))
                 .andExpect(jsonPath("$.name").value("Curso de Java"))
@@ -170,7 +159,7 @@ class ProductControllerIntegrationTest {
 
     @Test
     void findByIdShouldReturn404WhenProductDoesNotExist() throws Exception {
-        expectErrorJson(mockMvc.perform(get(BASE_PATH + "/{id}", 999_999L)),
+        expectErrorJson(mockMvc.perform(bearer(get(BASE_PATH + "/{id}", 999_999L), userToken)),
                 404, BASE_PATH + "/999999");
     }
 
@@ -180,9 +169,9 @@ class ProductControllerIntegrationTest {
         Long mobileId = categoryIdByName("Mobile");
         Product product = saveProduct("Curso de Java", new BigDecimal("99.90"), 10, programacaoId);
 
-        mockMvc.perform(put(BASE_PATH + "/{id}", product.getId())
+        mockMvc.perform(bearer(put(BASE_PATH + "/{id}", product.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"Curso de Java 21\",\"price\":119.90,\"categoryId\":" + mobileId + "}"))
+                        .content("{\"name\":\"Curso de Java 21\",\"price\":119.90,\"categoryId\":" + mobileId + "}"), adminToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(product.getId()))
                 .andExpect(jsonPath("$.name").value("Curso de Java 21"))
@@ -199,9 +188,9 @@ class ProductControllerIntegrationTest {
 
     @Test
     void updateShouldReturn404WhenProductDoesNotExist() throws Exception {
-        mockMvc.perform(put(BASE_PATH + "/{id}", 999_999L)
+        mockMvc.perform(bearer(put(BASE_PATH + "/{id}", 999_999L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"Novo nome\"}"))
+                        .content("{\"name\":\"Novo nome\"}"), adminToken))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.path").value(BASE_PATH + "/999999"));
     }
@@ -211,7 +200,7 @@ class ProductControllerIntegrationTest {
         Long categoryId = categoryIdByName("Programação");
         Product product = saveProduct("Curso de Java", new BigDecimal("99.90"), 10, categoryId);
 
-        mockMvc.perform(delete(BASE_PATH + "/{id}", product.getId()))
+        mockMvc.perform(bearer(delete(BASE_PATH + "/{id}", product.getId()), adminToken))
                 .andExpect(status().isNoContent());
 
         assertThat(productRepository.findById(product.getId())).isEmpty();
@@ -219,7 +208,7 @@ class ProductControllerIntegrationTest {
 
     @Test
     void deleteShouldReturn404WhenProductDoesNotExist() throws Exception {
-        mockMvc.perform(delete(BASE_PATH + "/{id}", 999_999L))
+        mockMvc.perform(bearer(delete(BASE_PATH + "/{id}", 999_999L), adminToken))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.path").value(BASE_PATH + "/999999"));
     }
@@ -253,9 +242,9 @@ class ProductControllerIntegrationTest {
         Long categoryId = categoryIdByName("Programação");
         Product product = saveProduct("Curso de Java", new BigDecimal("99.90"), 5, categoryId);
 
-        mockMvc.perform(patch(BASE_PATH + "/{id}/stock", product.getId())
+        mockMvc.perform(bearer(patch(BASE_PATH + "/{id}/stock", product.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"quantity\":-6}"))
+                        .content("{\"quantity\":-6}"), adminToken))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.timestamp").exists())
                 .andExpect(jsonPath("$.status").value(400))
@@ -281,31 +270,31 @@ class ProductControllerIntegrationTest {
         Long categoryId = categoryIdByName("Programação");
         Product product = saveProduct("Curso de Java", new BigDecimal("99.90"), 5, categoryId);
 
-        mockMvc.perform(patch(BASE_PATH + "/{id}/stock", product.getId())
+        mockMvc.perform(bearer(patch(BASE_PATH + "/{id}/stock", product.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"quantity\":null}"))
+                        .content("{\"quantity\":null}"), adminToken))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors.quantity").value("Quantity is required"));
     }
 
     @Test
     void adjustStockShouldReturn404WhenProductDoesNotExist() throws Exception {
-        expectErrorJson(mockMvc.perform(patch(BASE_PATH + "/{id}/stock", 999_999L)
+        expectErrorJson(mockMvc.perform(bearer(patch(BASE_PATH + "/{id}/stock", 999_999L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"quantity\":5}")),
+                        .content("{\"quantity\":5}"), adminToken)),
                 404, BASE_PATH + "/999999/stock");
     }
 
     private ResultActions performPost(String body) throws Exception {
-        return mockMvc.perform(post(BASE_PATH)
+        return mockMvc.perform(bearer(post(BASE_PATH)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(body));
+                .content(body), adminToken));
     }
 
     private ResultActions performStockPatch(Long id, int quantity) throws Exception {
-        return mockMvc.perform(patch(BASE_PATH + "/{id}/stock", id)
+        return mockMvc.perform(bearer(patch(BASE_PATH + "/{id}/stock", id)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"quantity\":" + quantity + "}"));
+                .content("{\"quantity\":" + quantity + "}"), adminToken));
     }
 
     private void expectErrorJson(ResultActions actions, int expectedStatus, String expectedPath) throws Exception {
