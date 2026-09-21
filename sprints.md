@@ -90,23 +90,23 @@ Plano de desenvolvimento dividido em sprints. Cada sprint corresponde a uma fase
 
 ## Sprint 5 — Pedidos e Estoque
 
-**Branch:** `feature/fase-5-orders` | **Status:** ⬜ Não iniciada | **Agente responsável:** `backend-dev`
+**Branch:** `feature/fase-5-orders` | **Status:** ✅ Concluída | **Agente responsável:** `backend-dev`
 
 **Objetivo:** fluxo de compra completo com transações e baixa de estoque.
 
-- [ ] Entidades `Order` e `OrderItem` (snapshot de preço/nome) + migration (`V5`)
-- [ ] `POST /orders` checkout transacional (baixa estoque + limpa carrinho)
-- [ ] Checkout com carrinho vazio retornando 400
-- [ ] Estoque insuficiente com rollback total
-- [ ] `GET /orders` listando pedidos do usuário (paginado)
-- [ ] `GET /orders/{id}` detalhe (dono ou admin)
-- [ ] `GET /admin/orders` listando todos (admin)
-- [ ] `PATCH /admin/orders/{id}/status` atualizando status
-- [ ] Cancelamento devolvendo itens ao estoque
-- [ ] Usuário não acessa pedido alheio (403)
-- [ ] Testes de integração do checkout (sucesso, falha, rollback)
-- [ ] `mvn clean verify` passando
-- [ ] Merge da branch em `develop`
+- [x] Entidades `Order` e `OrderItem` (snapshot de preço/nome) + migration (`V5`)
+- [x] `POST /orders` checkout transacional (baixa estoque + limpa carrinho)
+- [x] Checkout com carrinho vazio retornando 400
+- [x] Estoque insuficiente com rollback total
+- [x] `GET /orders` listando pedidos do usuário (paginado)
+- [x] `GET /orders/{id}` detalhe (dono ou admin)
+- [x] `GET /admin/orders` listando todos (admin)
+- [x] `PATCH /admin/orders/{id}/status` atualizando status
+- [x] Cancelamento devolvendo itens ao estoque
+- [x] Usuário não acessa pedido alheio (403)
+- [x] Testes de integração do checkout (sucesso, falha, rollback)
+- [x] `mvn clean verify` passando
+- [x] Merge da branch em `develop`
 
 ---
 
