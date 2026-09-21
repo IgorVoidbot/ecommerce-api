@@ -47,22 +47,22 @@ Plano de desenvolvimento dividido em sprints. Cada sprint corresponde a uma fase
 
 ## Sprint 3 — Autenticação e Autorização JWT
 
-**Branch:** `feature/fase-3-auth` | **Status:** ⬜ Não iniciada | **Agente responsável:** `security-engineer`
+**Branch:** `feature/fase-3-auth` | **Status:** ✅ Concluída | **Agente responsável:** `security-engineer`
 
 **Objetivo:** segurança completa com JWT e roles.
 
-- [ ] Entidade `User` + repository
-- [ ] `POST /auth/register` com senha BCrypt
-- [ ] `POST /auth/login` retornando JWT (expiração 2h)
-- [ ] `JwtService` (geração/validação de token)
-- [ ] `JwtAuthFilter` + `UserDetailsServiceImpl`
-- [ ] `SecurityConfig` com regras por rota e role
-- [ ] Endpoints de escrita protegidos como `ADMIN`
-- [ ] E-mail duplicado retornando 409
-- [ ] Testes unitários de auth service e jwt
-- [ ] Testes de integração (401 sem token / 403 sem role)
-- [ ] `mvn clean verify` passando
-- [ ] Merge da branch em `develop`
+- [x] Entidade `User` + repository
+- [x] `POST /auth/register` com senha BCrypt
+- [x] `POST /auth/login` retornando JWT (expiração 2h)
+- [x] `JwtService` (geração/validação de token)
+- [x] `JwtAuthFilter` + `UserDetailsServiceImpl`
+- [x] `SecurityConfig` com regras por rota e role
+- [x] Endpoints de escrita protegidos como `ADMIN`
+- [x] E-mail duplicado retornando 409
+- [x] Testes unitários de auth service e jwt
+- [x] Testes de integração (401 sem token / 403 sem role)
+- [x] `mvn clean verify` passando
+- [x] Merge da branch em `develop`
 
 ---
 
