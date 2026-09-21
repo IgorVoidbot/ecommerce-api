@@ -20,6 +20,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -112,6 +113,18 @@ class AuthServiceImplTest {
                 .thenThrow(new BadCredentialsException("Bad credentials"));
 
         assertThatThrownBy(() -> authService.login(new LoginRequest("igor@example.com", "wrongPassword")))
+                .isInstanceOf(UnauthorizedException.class)
+                .hasMessage("Invalid email or password");
+
+        verify(jwtService, never()).generateToken(any(User.class));
+    }
+
+    @Test
+    void loginShouldThrowUnauthorizedExceptionWhenEmailDoesNotExist() {
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenThrow(new UsernameNotFoundException("User not found"));
+
+        assertThatThrownBy(() -> authService.login(new LoginRequest("unknown@example.com", "senhaForte123")))
                 .isInstanceOf(UnauthorizedException.class)
                 .hasMessage("Invalid email or password");
 

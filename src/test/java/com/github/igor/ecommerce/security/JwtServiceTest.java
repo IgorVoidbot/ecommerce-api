@@ -85,6 +85,13 @@ class JwtServiceTest {
     }
 
     @Test
+    void extractRoleShouldReturnRoleClaim() {
+        String token = jwtService.generateToken(buildUser());
+
+        assertThat(jwtService.extractRole(token)).isEqualTo("ADMIN");
+    }
+
+    @Test
     void extractEmailShouldThrowForInvalidToken() {
         assertThatThrownBy(() -> jwtService.extractEmail("not-a-jwt"))
                 .isInstanceOf(JwtException.class);
