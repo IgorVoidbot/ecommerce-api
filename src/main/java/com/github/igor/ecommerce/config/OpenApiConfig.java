@@ -25,7 +25,7 @@ public class OpenApiConfig {
                         .version("1.0.0")
                         .contact(new Contact()
                                 .name("Igor")
-                                .email("igor@example.com"))
+                                .url("https://github.com/IgorVoidbot/ecommerce-api"))
                         .license(new License()
                                 .name("MIT")
                                 .url("https://opensource.org/licenses/MIT")))
